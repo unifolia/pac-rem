@@ -11,8 +11,9 @@ let coinsCounted = false
 let upLeftMovement = -1
 let downRightMovement = 1
 
-const pacWorldDiv = document.getElementsByClassName('pacWorld')[0]
-const scoreHeader = document.getElementsByClassName('score')[0]
+const homeHeader = document.getElementsByTagName("h2")[0]
+const scoreHeader = document.getElementsByClassName("score")[0]
+const pacWorldDiv = document.getElementsByClassName("pacWorld")[0]
 
 let rembrandt = {
     x: 7,
@@ -53,7 +54,7 @@ let pacMap = [
 ]
 
 pacApp.youLose = () => {
-    alert("You lose!")
+    alert("You lose! :(")
     location.reload()
 }
 
@@ -169,13 +170,11 @@ pacApp.portal = (character, movement) => {
 
     if (movement == - 1) {
         if (portalY[13] == 1) {
-            portalY[13] == 3
             character.counter++
         }
         character.x = 13
     } else {
         if (portalY[1] == 1) {
-            portalY[1] == 3
             character.counter++
         }
         character.x = 1
@@ -236,13 +235,12 @@ pacApp.detectSwipe = () => {
                 pacApp.canMoveVertical(rembrandt, downRightMovement)
             }
         }
-
         initialX = null
         initialY = null
     }
 }
 
-const enemyMovement = () => {
+pacApp.enemyMovement = () => {
     setInterval(() => {
         let moveToMake = randomEnemyMove()
         if (moveToMake === 0) {
@@ -254,14 +252,12 @@ const enemyMovement = () => {
         } else if (moveToMake === 3) {
             pacApp.canMoveHorizontal(enemy, upLeftMovement)
         } 
-        }, 25)
+    }, 25)
 }
 
-document.addEventListener("click", event => {
-    if (event.target.localName == "h2") {
-        pacApp.generatePacWorld()
-        pacApp.initializeMovement()
-        pacApp.detectSwipe()
-        enemyMovement()
-    }
+homeHeader.addEventListener("click", () => {
+    pacApp.generatePacWorld()
+    pacApp.initializeMovement()
+    pacApp.detectSwipe()
+    pacApp.enemyMovement()
 })
