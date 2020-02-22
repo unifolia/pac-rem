@@ -3,7 +3,11 @@ const pacApp = {}
 let vh = window.innerHeight * 0.01
 document.documentElement.style.setProperty('--vh', `${vh}px`)
 
-let catCounter = 0
+let winningScore
+let totalCoinsArray = []
+let totalCoins = 0
+let coinsCounted = false
+
 let upLeftMovement = -1
 let downRightMovement = 1
 
@@ -53,20 +57,28 @@ pacApp.youLose = () => {
     location.reload()
 }
 
+pacApp.getWinScore = () => {
+    totalCoinsArray.forEach(coin => {
+        totalCoins += coin
+    })
+    winningScore = totalCoins / 2
+    coinsCounted = true
+}
+
 pacApp.countScore = () => {
-    if (enemy.counter + rembrandt.counter == 78) {
-        if (rembrandt.counter > enemy.counter) {
-            alert("You win!")
-            location.reload()
-        } else {
-            pacApp.youLose()
-        }
-    } 
+    if (rembrandt.counter >= winningScore) {
+        alert("You win!")
+        location.reload()
+    } else if (enemy.counter >= winningScore) {
+        pacApp.youLose()
+    }
 }
 
 pacApp.setMap = () => {
     pacWorldDiv.innerHTML = ""
-    scoreHeader.innerHTML = `Rembrandt: <span class="counter">${rembrandt.counter} | Dog Cop: ${enemy.counter}</span>`
+    scoreHeader.innerHTML = 
+    `Rembrandt: <span class="counter">${rembrandt.counter} | 
+    Dog Cop: ${enemy.counter}</span>`
 }
 
 pacApp.pacWorldAppend = typeToAppend => {
@@ -74,7 +86,6 @@ pacApp.pacWorldAppend = typeToAppend => {
 }
 
 pacApp.generatePacWorld = () => {
-    pacApp.countScore()
     pacApp.setMap()
     pacMap.forEach(row => {
         row.forEach(element => {
@@ -82,6 +93,9 @@ pacApp.generatePacWorld = () => {
                 pacApp.pacWorldAppend("background")
             } else if (element == 1) {
                 pacApp.pacWorldAppend("coin")
+                if (coinsCounted == false) {
+                    totalCoinsArray.push(element)
+                }
             } else if (element == 2) {
                 pacApp.pacWorldAppend("wall")
             } else if (element == 3) {
@@ -94,11 +108,18 @@ pacApp.generatePacWorld = () => {
         })
         pacWorldDiv.innerHTML += "<br>"
     })
+
+    if (coinsCounted == false) {
+        pacApp.getWinScore()
+    }
+
+    pacApp.countScore()
 }
 
 pacApp.canMoveVertical = (character, movement) => {
     if (pacMap[character.y + movement][character.x] !== 2) {
-        if (pacMap[character.y + movement][character.x] == 3 || pacMap[character.y + movement][character.x] == 5) {
+        if (pacMap[character.y + movement][character.x] == 3 || 
+            pacMap[character.y + movement][character.x] == 5) {
             pacApp.youLose()
         }
         pacApp.increaseCounterUD(character, movement)
@@ -112,7 +133,8 @@ pacApp.canMoveVertical = (character, movement) => {
 
 pacApp.canMoveHorizontal = (character, movement) => {
     if (pacMap[character.y][character.x + movement] !== 2) {
-        if (pacMap[character.y][character.x + movement] == 3 || pacMap[character.y][character.x + movement] == 5) {
+        if (pacMap[character.y][character.x + movement] == 3 || 
+            pacMap[character.y][character.x + movement] == 5) {
             pacApp.youLose()
         }
         pacApp.increaseCounterLR(character, movement)
@@ -189,19 +211,17 @@ pacApp.detectSwipe = () => {
     }
 
     function moveTouch(event) {
-        if (initialX === null) {
+        event.preventDefault()
+
+        if (initialX === null || initialY === null) {
             return
         }
 
-        if (initialY === null) {
-            return
-        }
+        let currentX = event.touches[0].clientX
+        let currentY = event.touches[0].clientY
 
-        var currentX = event.touches[0].clientX
-        var currentY = event.touches[0].clientY
-
-        var diffX = initialX - currentX
-        var diffY = initialY - currentY
+        let diffX = initialX - currentX
+        let diffY = initialY - currentY
 
         if (Math.abs(diffX) > Math.abs(diffY)) {
             if (diffX > 0) {
@@ -219,8 +239,6 @@ pacApp.detectSwipe = () => {
 
         initialX = null
         initialY = null
-
-        event.preventDefault()
     }
 }
 
@@ -236,7 +254,7 @@ const enemyMovement = () => {
         } else if (moveToMake === 3) {
             pacApp.canMoveHorizontal(enemy, upLeftMovement)
         } 
-        }, 5)
+        }, 25)
 }
 
 document.addEventListener("click", event => {
