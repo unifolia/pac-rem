@@ -32,7 +32,7 @@ body {
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    background: cornsilk;
+    background: #fff8dc;
 }
 
 h1, h2, h3 {
@@ -62,7 +62,7 @@ h2::after {
     width: 30%;
     left: 35%;
     bottom: -5px;
-    border-bottom: 3px dotted black;
+    border-bottom: 3px dotted #000000;
 }
 
 h3 {
@@ -89,11 +89,13 @@ p {
 }
 
 .wall {
-    background: gray;
+    background: #808080;
+    border-bottom-right-radius: 50%;
+    border-top-left-radius: 50%;
 }
 
 .background {
-    background: cornsilk;
+    background: #fff8dc;
 }
 
 .rembrandt {
@@ -104,12 +106,14 @@ p {
 .coin {
     border: 15px solid cornsilk;
     border-radius: 50%;
-    background: darkolivegreen;
+    background: #556b2f;
 }
 
 .portal {
-    background: steelblue;
-    box-shadow: inset 0px 0px 20px orange;
+    background: linear-gradient(228deg, #ed3535, #ed8c35, #e4ed35, #5aed35, #35edb2, #358eed, #7f35ed, #ed35c9);
+    background-size: 100% 100%;
+    box-shadow: inset 0px 0px 30px #daa520;
+    border-radius: 50%;
 }
 
 .enemy {
@@ -129,7 +133,7 @@ p {
         width: 30px;
     }
     .coin {
-        border: 12px solid cornsilk;
+        border: 12px solid #fff8dc;
     }
 }
 
@@ -144,7 +148,7 @@ p {
         width: 24px;
     }
     .coin {
-        border: 7px solid cornsilk;
+        border: 7px solid #fff8dc;
     }
 }
 
@@ -154,6 +158,6 @@ p {
         width: 18px;
     }
     .coin {
-        border: 4px solid cornsilk;
+        border: 4px solid #fff8dc;
     }
 }
