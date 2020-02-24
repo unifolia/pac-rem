@@ -264,13 +264,17 @@ pacApp.detectSwipe = () => {
         if (Math.abs(diffX) > Math.abs(diffY)) {
             if (diffX > 0) {
                 pacApp.moveCharacter(rembrandt, x, -1)
+                pacApp.moveCharacter(rembrandt, x, -1)
             } else {
+                pacApp.moveCharacter(rembrandt, x, 1)
                 pacApp.moveCharacter(rembrandt, x, 1)
             }
         } else {
             if (diffY > 0) {
                 pacApp.moveCharacter(rembrandt, y, -1)
+                pacApp.moveCharacter(rembrandt, y, -1)
             } else {
+                pacApp.moveCharacter(rembrandt, y, 1)
                 pacApp.moveCharacter(rembrandt, y, 1)
             }
         }
