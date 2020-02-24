@@ -78,6 +78,7 @@ pacApp.switcheroo = () => {
     if (coinsCounted == false) {
         charKey = 1980
         characterName = "Pinky"
+        audio.src = "./ghostMusic.mp3"
     }
 }
 
@@ -296,7 +297,7 @@ pacApp.enemyMovement = () => {
             } else if (moveToMake === 3) {
                 pacApp.moveCharacter(enemy, x, -1)
             } 
-        }, 40)
+        }, 50)
     }, 500)
 }
 
