@@ -1,62 +1,81 @@
-@font-face {
-    font-family: "pacFont";
-    src: url(./PAC-FONT.TTF);
-}
-
 html{line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,footer,header,nav,section{display:block}h1{font-size:2em;margin:.67em 0}figcaption,figure,main{display:block}figure{margin:1em 40px}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace,monospace;font-size:1em}a{background-color:transparent;-webkit-text-decoration-skip:objects}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:inherit}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace,monospace;font-size:1em}dfn{font-style:italic}mark{background-color:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}audio,video{display:inline-block}audio:not([controls]){display:none;height:0}img{border-style:none}svg:not(:root){overflow:hidden}button,input,optgroup,select,textarea{font-family:sans-serif;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}button,html [type=button],[type=reset],[type=submit]{-webkit-appearance:button}button::-moz-focus-inner,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner{border-style:none;padding:0}button:-moz-focusring,[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring{outline:1px dotted ButtonText}fieldset{padding:.35em .75em .625em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{display:inline-block;vertical-align:baseline}textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;padding:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-cancel-button,[type=search]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details,menu{display:block}summary{display:list-item}canvas{display:inline-block}template{display:none}[hidden]{display:none}
-
-.clearfix:after {visibility: hidden; display: block; font-size: 0; content: ''; clear: both; height: 0; }
 
 html { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;}
 
 *, *:before, *:after {box-sizing: inherit}
 
-.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; border: 0; padding: 0; white-space: nowrap; clip-path: inset(100%); clip: rect(0 0 0 0); overflow: hidden;}
 
-h1, 
-h2, 
-h3, 
-h4 {
-    margin: 0;
-    padding: 0;
+@font-face {
+    font-family: "pacFont";
+    src: url(./PAC-FONT.TTF);
 }
 
 html {
     font-size: 125%;
+    font-family: monospace;
 }
 
 body {
     height: 100vh;
-    padding: 0 50px;
+    padding: 50px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-evenly;
     align-items: center;
     background: #fff8dc;
 }
 
-h1, h2, h3 {
+h1, 
+h2,
+h3, 
+button {
+    margin: 0;
+    padding: 0;
     text-align: center;
+}
+
+h1, 
+button {
     font-family: pacFont;
+    font-weight: 900;
 }
 
 h1 {
-    font-size: 4.5rem;
+    font-size: 4rem;
 }
 
 h2 {
-    position: relative;
-    font-size: 3.5rem;
-    transition: all 0.3s;
-    margin: 0 0 60px 0;
+    margin: 10px 0;
+    font-size: 1.6rem;
 }
 
-h2:hover {
+h3 {
+    margin: 20px 0;
+    font-size: 1.5rem;
+}
+
+p {
+    margin: 5% 0;
+    font-size: 1.5rem;
+    font-family: monospace;
+    text-align: center;
+}
+
+button {
+    position: relative;
+    margin: 10% 0;
+    font-size: 3.5rem;
+    background: none;
+    border: none;
+    transition: all 0.3s;
+}
+
+button:hover {
     cursor: pointer;
     transform: scale(1.1);
 }
 
-h2::after {
+button::after {
     position: absolute;
     content: "";
     width: 30%;
@@ -65,27 +84,27 @@ h2::after {
     border-bottom: 3px dotted #000000;
 }
 
-h3 {
-    font-size: 2rem;
-    margin: 25px 0 0 0;
+.score {
+    display: block;
 }
 
-h4 {
-    font-family: monospace;
+.charName {
+    border-bottom: 2px solid black;
 }
 
-p {
+.pacWorld {
     text-align: center;
-    font-family: monospace;
-    font-size: 1.25rem;
-    margin: 0 0 75px 0;
+}
+
+.infoText {
+    width: 100%;
 }
 
 .pacWorld > div {
     vertical-align: top;
     display: inline-block;
-    width: 37.5px;
-    height: 37.5px;
+    width: 35px;
+    height: 35px;
 }
 
 .wall {
@@ -103,10 +122,15 @@ p {
     background-size: cover;
 }
 
+.enemy {
+    background-image: url(./dogCop.png);
+    background-size: cover;
+}
+
 .coin {
-    border: 15px solid cornsilk;
-    border-radius: 50%;
     background: #556b2f;
+    border: 13px solid cornsilk;
+    border-radius: 50%;
 }
 
 .portal {
@@ -116,18 +140,85 @@ p {
     border-radius: 50%;
 }
 
-.enemy {
-    background-image: url(./dogCop.png);
-    background-size: cover;
+
+progress {
+    display: inline-block;
+    width: 70%;
+    margin: -7px;
+    border: 2px solid black;
+    border-radius: 5px;
+    box-shadow: 2px 2px black;
+}
+
+progress[value] {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+progress[value]::-webkit-progress-bar {
+    border-radius: 5px;
+    background: none;
+}
+
+progress[value]::-webkit-progress-value {
+    background-image:
+        -webkit-linear-gradient(-45deg, 
+            transparent 33%, rgba(0, 0, 0, .1) 33%, 
+            rgba(0,0, 0, .1) 66%, transparent 66%),
+        -webkit-linear-gradient(top, 
+            rgba(255, 255, 255, .25), 
+            rgba(0, 0, 0, .25)),
+        -webkit-linear-gradient(left, 
+        #7ce667, #fef0a2, #e38787);
+    border-radius: 2px; 
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+progress[value]::-moz-progress-bar { 
+    background-image:
+        -moz-linear-gradient(
+        135deg, 
+        transparent calc(100% / 1.5), 
+        rgba(0, 0, 0, 0.1) 33%, 
+        rgba(0, 0, 0, 0.1) 66%, 
+        transparent 33% 
+        ),
+        -moz-linear-gradient(
+        top, 
+        rgba(255, 255, 255, 0.25), 
+        rgba(0, 0, 0, 0.25)
+        ),
+        -moz-linear-gradient(
+        left, 
+        #7ce667, #fef0a2, #e38787
+        );  
+    border-radius: 2px; 
+    background-size: 35px 20px, 100% 100%, 100% 100%; 
+}
+
+.visuallyHidden:not(:focus):not(:active) { 
+    position: absolute !important;
+    height: 1px; 
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap;
 }
 
 @media (max-width: 690px) {
     body {
-        padding: 10px;
+        padding: 35px 15px;
     }
 }
 
 @media (max-width: 590px) {
+    h1 {
+        font-size: 3.5rem;
+    }
+    button {
+        font-size: 2.75rem;
+    }
     .pacWorld > div {
         height: 30px;
         width: 30px;
@@ -137,10 +228,32 @@ p {
     }
 }
 
+@media (max-width: 545px) {
+    body {
+        padding: 30px 10px;
+    }
+}
+
 @media (max-width: 470px) {
     body {
         height: calc(var(--vh, 1vh) * 100);
-        padding: 5px;
+    }
+
+    h1 {
+        font-size: 2.75rem;
+    }
+
+    h2 {
+        margin-top: 0;
+        font-size: 1.1rem;
+    }
+
+    button {
+        font-size: 2.5rem;
+    }
+
+    p {
+        font-size: 1rem;
     }
 
     .pacWorld > div {

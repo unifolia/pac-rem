@@ -1,19 +1,18 @@
 const pacApp = {}
 
+const pacWorldDiv = document.getElementsByClassName("pacWorld")[0]
+
 let vh = window.innerHeight * 0.01
 document.documentElement.style.setProperty('--vh', `${vh}px`)
 
-let winningScore
-let totalCoinsArray = []
+let timeLeft = 35
+let winningScore = 0
 let totalCoins = 0
+let totalCoinsArray = []
 let coinsCounted = false
 
-let upLeftMovement = -1
-let downRightMovement = 1
-
-const homeHeader = document.getElementsByTagName("h2")[0]
-const scoreHeader = document.getElementsByClassName("score")[0]
-const pacWorldDiv = document.getElementsByClassName("pacWorld")[0]
+let x = "horizontal"
+let y = "vertical"
 
 let rembrandt = {
     x: 7,
@@ -53,11 +52,6 @@ let pacMap = [
     [2, 2, 2, 2, 2,   2, 2, 2, 2, 2, 2,   2, 2, 2, 2],
 ]
 
-pacApp.youLose = () => {
-    alert("You lose! :(")
-    location.reload()
-}
-
 pacApp.getWinScore = () => {
     totalCoinsArray.forEach(coin => {
         totalCoins += coin
@@ -66,28 +60,62 @@ pacApp.getWinScore = () => {
     coinsCounted = true
 }
 
-pacApp.countScore = () => {
-    if (rembrandt.counter >= winningScore) {
-        alert("You win!")
-        location.reload()
-    } else if (enemy.counter >= winningScore) {
-        pacApp.youLose()
+pacApp.endGame = result => {
+    alert(`You ${result}!`)
+    location.reload()
+}
+
+pacApp.countScore = character => {
+    character.counter++
+
+    if (rembrandt.counter > winningScore) {
+        pacApp.endGame("win")
+    } else if (enemy.counter > winningScore) {
+        pacApp.endGame("lose")
     }
 }
 
-pacApp.setMap = () => {
-    pacWorldDiv.innerHTML = ""
-    scoreHeader.innerHTML = 
-    `Rembrandt: <span class="counter">${rembrandt.counter} | 
-    Dog Cop: ${enemy.counter}</span>`
+pacApp.countDown = () => {
+    setInterval(() => {
+        document.querySelector("progress").value = (timeLeft -= 1)
+
+        if (timeLeft == 0) {
+            setTimeout(() => {
+                pacApp.endGame("lose")
+            }, 10)
+        }
+    }, 250)
 }
 
-pacApp.pacWorldAppend = typeToAppend => {
-    pacWorldDiv.innerHTML += `<div class="${typeToAppend}"></div>`
+pacApp.setText = () => {
+    document.querySelector("h2").innerHTML =
+    `<span class="score">Score:</span>
+    <span class="charName">Rembrandt</span> -  
+    <span class="rembrandtScore">${rembrandt.counter}</span>
+    vs. 
+    <span class="charName">Dog Cop</span> -  
+    <span class="enemyScore">${enemy.counter}</span>`
+
+    document.querySelector("h3").innerHTML = `Time: <progress value="${timeLeft}" max="${timeLeft}"></progress>`
+
+    document.querySelector(".gameInfo").hidden = false
+    document.querySelector(".gameInfo").setAttribute("aria-hidden", false)
+    document.querySelector(".pacWorld").setAttribute("aria-hidden", true)
+}
+
+pacApp.resetMap = () => {
+    pacWorldDiv.innerHTML = ""
+
+    document.querySelector(".rembrandtScore").innerHTML = `${rembrandt.counter}`
+    document.querySelector(".enemyScore").innerHTML = `${enemy.counter}`
+}
+
+pacApp.pacWorldAppend = type => {
+    pacWorldDiv.innerHTML += `<div class="${type}"></div>`
 }
 
 pacApp.generatePacWorld = () => {
-    pacApp.setMap()
+    pacApp.resetMap()
     pacMap.forEach(row => {
         row.forEach(element => {
             if (element == 0) {
@@ -113,86 +141,64 @@ pacApp.generatePacWorld = () => {
     if (coinsCounted == false) {
         pacApp.getWinScore()
     }
-
-    pacApp.countScore()
 }
 
-pacApp.canMoveVertical = (character, movement) => {
-    if (pacMap[character.y + movement][character.x] !== 2) {
-        if (pacMap[character.y + movement][character.x] == 3 || 
-            pacMap[character.y + movement][character.x] == 5) {
-            pacApp.youLose()
-        }
-        pacApp.increaseCounterUD(character, movement)
-
-        pacMap[character.y][character.x] = 0
-        character.y += movement
-        pacMap[character.y][character.x] = character.code
-        pacApp.generatePacWorld()
+pacApp.moveCharacter = (character, movementAxis, movementUnit) => {
+    if (movementAxis == y) {
+        moveToBlock = pacMap[character.y + movementUnit][character.x]
+    } else if (movementAxis == x) {
+        moveToBlock = pacMap[character.y][character.x + movementUnit]
     }
-}
 
-pacApp.canMoveHorizontal = (character, movement) => {
-    if (pacMap[character.y][character.x + movement] !== 2) {
-        if (pacMap[character.y][character.x + movement] == 3 || 
-            pacMap[character.y][character.x + movement] == 5) {
-            pacApp.youLose()
+    if (moveToBlock !== 2) {
+        if (moveToBlock == 1) {
+            pacApp.countScore(character)
+        } else if (moveToBlock == 3 || moveToBlock == 5) {
+            pacApp.endGame("lose")
         }
-        pacApp.increaseCounterLR(character, movement)
 
         pacMap[character.y][character.x] = 0
 
-        if (pacMap[character.y][character.x + movement] !== 4) {
-            character.x += movement
+        if (moveToBlock == 4) {
+            pacApp.portal(character, movementUnit)
         } else {
-            pacApp.portal(character, movement)
+            if (movementAxis == y) {
+                character.y += movementUnit
+            } else {
+                character.x += movementUnit
+            }
         }
 
         pacMap[character.y][character.x] = character.code
+
         pacApp.generatePacWorld()
-    }
-}
-
-pacApp.increaseCounterLR = (character, movement) => {
-    if (pacMap[character.y][character.x + movement] == 1) {
-        character.counter++
-    }
-}
-
-pacApp.increaseCounterUD = (character, movement) => {
-    if (pacMap[character.y + movement][character.x] == 1) {
-        character.counter++
     }
 }
 
 pacApp.portal = (character, movement) => {
-    let portalY = pacMap[6]
+    if (pacMap[6][13] == 1 || pacMap[6][1] == 1) {
+        character.counter++
+    }
 
     if (movement == - 1) {
-        if (portalY[13] == 1) {
-            character.counter++
-        }
         character.x = 13
     } else {
-        if (portalY[1] == 1) {
-            character.counter++
-        }
         character.x = 1
     }
 }
 
-pacApp.initializeMovement = () => {
+pacApp.rembrandtMovement = () => {
     document.onkeydown = event => {
         keyPress = event.key
 
         if (keyPress == "ArrowUp" || keyPress == "w") {
-            pacApp.canMoveVertical(rembrandt, upLeftMovement)
+            pacApp.moveCharacter(rembrandt, y, -1)
         } else if (keyPress == "ArrowRight" || keyPress == "d") {
-            pacApp.canMoveHorizontal(rembrandt, downRightMovement)
+            pacApp.moveCharacter(rembrandt, x, 1)
         } else if (keyPress == "ArrowDown" || keyPress == "s") {
-            pacApp.canMoveVertical(rembrandt, downRightMovement)
+            pacApp.moveCharacter(rembrandt, y, 1)
         } else if (keyPress == "ArrowLeft" || keyPress == "a") {
-            pacApp.canMoveHorizontal(rembrandt, upLeftMovement)
+            pacApp.moveCharacter(rembrandt, x, -1)
         }
     }
 }
@@ -224,15 +230,15 @@ pacApp.detectSwipe = () => {
 
         if (Math.abs(diffX) > Math.abs(diffY)) {
             if (diffX > 0) {
-                pacApp.canMoveHorizontal(rembrandt, upLeftMovement)
+                pacApp.moveCharacter(rembrandt, x, -1)
             } else {
-                pacApp.canMoveHorizontal(rembrandt, downRightMovement)
+                pacApp.moveCharacter(rembrandt, x, 1)
             }
         } else {
             if (diffY > 0) {
-                pacApp.canMoveVertical(rembrandt, upLeftMovement)
+                pacApp.moveCharacter(rembrandt, y, -1)
             } else {
-                pacApp.canMoveVertical(rembrandt, downRightMovement)
+                pacApp.moveCharacter(rembrandt, y, 1)
             }
         }
         initialX = null
@@ -241,23 +247,28 @@ pacApp.detectSwipe = () => {
 }
 
 pacApp.enemyMovement = () => {
-    setInterval(() => {
-        let moveToMake = randomEnemyMove()
-        if (moveToMake === 0) {
-            pacApp.canMoveVertical(enemy, upLeftMovement)
-        } else if (moveToMake === 1) {
-            pacApp.canMoveHorizontal(enemy, downRightMovement)
-        } else if (moveToMake === 2) {
-            pacApp.canMoveVertical(enemy, downRightMovement)
-        } else if (moveToMake === 3) {
-            pacApp.canMoveHorizontal(enemy, upLeftMovement)
-        } 
-    }, 25)
+    setTimeout(() => {
+        setInterval(() => {
+            let moveToMake = randomEnemyMove()
+            if (moveToMake === 0) {
+                pacApp.moveCharacter(enemy, y, -1)
+            } else if (moveToMake === 1) {
+                pacApp.moveCharacter(enemy, x, 1)
+            } else if (moveToMake === 2) {
+                pacApp.moveCharacter(enemy, y, 1)
+            } else if (moveToMake === 3) {
+                pacApp.moveCharacter(enemy, x, -1)
+            } 
+        }, 25)
+    }, 500)
 }
 
-homeHeader.addEventListener("click", () => {
+document.querySelector("button").addEventListener("click", () => {
+    pacApp.setText()
+    
     pacApp.generatePacWorld()
-    pacApp.initializeMovement()
-    pacApp.detectSwipe()
+    pacApp.countDown()
+    pacApp.rembrandtMovement()
     pacApp.enemyMovement()
+    pacApp.detectSwipe()
 })
