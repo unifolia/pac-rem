@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Pac-Rem, a Pac-Man-like game in which a cat has to collect all the catnip... before the cops do!">
 
+    <script src="https://kit.fontawesome.com/4195f42b5c.js" crossorigin="anonymous"></script>
+
     <link rel="apple-touch-icon" sizes="180x180" href="./favicons/appleTouchIcon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="./favicons/favicon32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="./favicons/favicon16.png">
@@ -14,7 +16,18 @@
     <title>PAC-REM | 🐈 🚓</title>
 </head>
 <body>
-    <h1>PAC-REM</h1>
+    <div>
+        <h1>PAC-REM</h1>
+        <div class="audioContainer">
+            <label for="volumeToggle" class="visuallyHidden">
+                Toggle Volume
+            </label>
+            <button class="volumeToggle" id="volumeToggle">
+                <i class="fas fa-volume-mute"></i>
+            </button>
+            <audio src="./music.mp3"></audio>
+        </div>
+    </div>
     <div class="gameInfo" hidden="true" aria-hidden="true">
         <h2></h2>
         <h3></h3>
@@ -25,8 +38,8 @@
             <span aria-hidden="true">🚓</span>
         </p>
         <p>Controls: ↑←↓→ / WASD / Swipe</p>
-        <label for="button" class="visuallyHidden">Start Game</label>
-        <button id="button">START</button>
+        <label for="startButton" class="visuallyHidden">Start Game</label>
+        <button class="startButton" id="startButton">START</button>
     </div>
     <script src="./pac.js"></script>
 </body>

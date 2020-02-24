@@ -1,11 +1,15 @@
 const pacApp = {}
 
 const pacWorldDiv = document.getElementsByClassName("pacWorld")[0]
+const audio = document.querySelector("audio")
 
 let vh = window.innerHeight * 0.01
 document.documentElement.style.setProperty('--vh', `${vh}px`)
 
-let timeLeft = 60
+audio.muted = true
+audio.loop = true
+
+let timeLeft = 30
 let winningScore = 0
 let totalCoins = 0
 let totalCoinsArray = []
@@ -109,7 +113,7 @@ pacApp.countDown = () => {
                 pacApp.endGame("lose")
             }, 10)
         }
-    }, 250)
+    }, 750)
 }
 
 pacApp.setText = () => {
@@ -126,6 +130,8 @@ pacApp.setText = () => {
     document.querySelector(".gameInfo").hidden = false
     document.querySelector(".gameInfo").setAttribute("aria-hidden", false)
     document.querySelector(".pacWorld").setAttribute("aria-hidden", true)
+
+    document.querySelector(".volumeToggle").className = "volumeToggle squish"
 }
 
 pacApp.resetMap = () => {
@@ -286,11 +292,16 @@ pacApp.enemyMovement = () => {
             } else if (moveToMake === 3) {
                 pacApp.moveCharacter(enemy, x, -1)
             } 
-        }, 25)
+        }, 40)
     }, 500)
 }
 
-document.querySelector("button").addEventListener("click", () => {
+document.querySelector(".volumeToggle").addEventListener("click", () => {
+    document.querySelector("i").classList.toggle("fa-volume-up")
+    audio.muted = !audio.muted
+})
+
+document.querySelector(".startButton").addEventListener("click", () => {
     pacApp.setText()
     
     pacApp.generatePacWorld()
@@ -298,6 +309,7 @@ document.querySelector("button").addEventListener("click", () => {
     pacApp.rembrandtMovement()
     pacApp.enemyMovement()
     pacApp.detectSwipe()
+    audio.play()
 })
 
 pacApp.onKonamiCode(() => {
