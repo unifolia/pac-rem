@@ -5,7 +5,7 @@ const pacWorldDiv = document.getElementsByClassName("pacWorld")[0]
 let vh = window.innerHeight * 0.01
 document.documentElement.style.setProperty('--vh', `${vh}px`)
 
-let timeLeft = 50
+let timeLeft = 60
 let winningScore = 0
 let totalCoins = 0
 let totalCoinsArray = []
@@ -13,6 +13,10 @@ let coinsCounted = false
 
 let x = "horizontal"
 let y = "vertical"
+
+let remKey = 3
+let userInput = ""
+let konamiCode = "38384040373937396665"
 
 let rembrandt = {
     x: 7,
@@ -51,6 +55,25 @@ let pacMap = [
     [2, 1, 1, 1, 1,   1, 1, 2, 1, 1, 1,   1, 1, 1, 2],
     [2, 2, 2, 2, 2,   2, 2, 2, 2, 2, 2,   2, 2, 2, 2],
 ]
+
+pacApp.onKonamiCode = callback => {
+    document.addEventListener("keydown", event => {
+        userInput += ("" + event.keyCode)
+        if (userInput === konamiCode) {
+            return callback()
+        } else if (!konamiCode.indexOf(userInput)) {
+            return
+        } else {
+            userInput = ("" + event.keyCode)
+        }
+    })
+}
+
+pacApp.switcheroo = () => {
+    if (coinsCounted == false) {
+        remKey = 6
+    }
+}
 
 pacApp.getWinScore = () => {
     totalCoinsArray.forEach(coin => {
@@ -127,12 +150,14 @@ pacApp.generatePacWorld = () => {
                 }
             } else if (element == 2) {
                 pacApp.pacWorldAppend("wall")
-            } else if (element == 3) {
+            } else if (element == remKey) {
                 pacApp.pacWorldAppend("rembrandt")
             } else if (element == 4) {
                 pacApp.pacWorldAppend("portal")
-            } else {
+            } else if (element == 5) {
                 pacApp.pacWorldAppend("enemy")
+            } else {
+                pacApp.pacWorldAppend("ghost")
             }
         })
         pacWorldDiv.innerHTML += "<br>"
@@ -271,4 +296,8 @@ document.querySelector("button").addEventListener("click", () => {
     pacApp.rembrandtMovement()
     pacApp.enemyMovement()
     pacApp.detectSwipe()
+})
+
+pacApp.onKonamiCode(() => {
+    pacApp.switcheroo()
 })

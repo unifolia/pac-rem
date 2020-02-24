@@ -127,6 +127,11 @@ button::after {
     background-size: cover;
 }
 
+.ghost {
+    background-image: url(./ghost.png);
+    background-size: cover;
+}
+
 .coin {
     background: #556b2f;
     border: 13px solid cornsilk;
