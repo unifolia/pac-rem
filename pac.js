@@ -9,7 +9,7 @@ document.documentElement.style.setProperty('--vh', `${vh}px`)
 audio.muted = true
 audio.loop = true
 
-let timeLeft = 30
+let timeLeft = 25
 let winningScore = 0
 let totalCoins = 0
 let totalCoinsArray = []
@@ -75,11 +75,9 @@ pacApp.onKonamiCode = callback => {
 }
 
 pacApp.switcheroo = () => {
-    if (coinsCounted == false) {
-        charKey = 1980
-        characterName = "Pinky"
-        audio.src = "./ghostMusic.mp3"
-    }
+    charKey = 1980
+    characterName = "Pinky"
+    audio.src = "./ghostMusic.mp3"
 }
 
 pacApp.getWinScore = () => {
@@ -318,5 +316,7 @@ document.querySelector(".startButton").addEventListener("click", () => {
 })
 
 pacApp.onKonamiCode(() => {
-    pacApp.switcheroo()
+    if (coinsCounted == false) {
+        pacApp.switcheroo()
+    }
 })
