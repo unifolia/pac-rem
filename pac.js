@@ -5,7 +5,7 @@ const pacWorldDiv = document.getElementsByClassName("pacWorld")[0]
 let vh = window.innerHeight * 0.01
 document.documentElement.style.setProperty('--vh', `${vh}px`)
 
-let timeLeft = 35
+let timeLeft = 50
 let winningScore = 0
 let totalCoins = 0
 let totalCoinsArray = []
