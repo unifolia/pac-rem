@@ -103,8 +103,8 @@ button::after {
 .pacWorld > div {
     vertical-align: top;
     display: inline-block;
-    width: 35px;
-    height: 35px;
+    width: 34px;
+    height: 34px;
 }
 
 .wall {
@@ -209,6 +209,26 @@ progress[value]::-moz-progress-bar {
     clip: rect(1px 1px 1px 1px);
     clip: rect(1px, 1px, 1px, 1px);
     white-space: nowrap;
+}
+
+@media (max-height: 650px) {
+    .pacWorld > div {
+        height: 32px;
+        width: 32px;
+    }
+    .coin {
+        border: 12px solid #fff8dc;
+    }
+}
+
+@media (max-height: 605px) {
+    .pacWorld > div {
+        height: 27px;
+        width: 27px;
+    }
+    .coin {
+        border: 10px solid #fff8dc;
+    }
 }
 
 @media (max-width: 690px) {

@@ -14,7 +14,8 @@ let coinsCounted = false
 let x = "horizontal"
 let y = "vertical"
 
-let remKey = 3
+let charKey = 3
+let characterName = "Rembrandt"
 let userInput = ""
 let konamiCode = "38384040373937396665"
 
@@ -71,7 +72,8 @@ pacApp.onKonamiCode = callback => {
 
 pacApp.switcheroo = () => {
     if (coinsCounted == false) {
-        remKey = 6
+        charKey = 1980
+        characterName = "Pinky"
     }
 }
 
@@ -113,7 +115,7 @@ pacApp.countDown = () => {
 pacApp.setText = () => {
     document.querySelector("h2").innerHTML =
     `<span class="score">Score:</span>
-    <span class="charName">Rembrandt</span> -  
+    <span class="charName">${characterName}</span> -  
     <span class="rembrandtScore">${rembrandt.counter}</span>
     vs. 
     <span class="charName">Dog Cop</span> -  
@@ -150,7 +152,7 @@ pacApp.generatePacWorld = () => {
                 }
             } else if (element == 2) {
                 pacApp.pacWorldAppend("wall")
-            } else if (element == remKey) {
+            } else if (element == charKey) {
                 pacApp.pacWorldAppend("rembrandt")
             } else if (element == 4) {
                 pacApp.pacWorldAppend("portal")
