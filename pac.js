@@ -1,24 +1,21 @@
 const pacApp = {}
 
-const pacWorldDiv = document.getElementsByClassName("pacWorld")[0]
-const audio = document.querySelector("audio")
-
-let vh = window.innerHeight * 0.01
-document.documentElement.style.setProperty('--vh', `${vh}px`)
-
-audio.muted = true
-audio.loop = true
-
+// Some 🆕 and 🆒 variables 
 let pacInitiated = false
-
 let timeLeft = 60
 let totalCoins = 0
-
 let x = "horizontal"
 let y = "vertical"
-
 let userInput = ""
 let konamiCode = "38384040373937396665"
+
+const pacWorldDiv = document.getElementsByClassName("pacWorld")[0]
+const audio = document.querySelector("audio")
+audio.muted = true
+audio.loop = true
+// for mobile height
+let vh = window.innerHeight * 0.01
+document.documentElement.style.setProperty('--vh', `${vh}px`)
 
 let player = {
     name: "rembrandt",
@@ -36,15 +33,22 @@ let enemy = {
     counter: 0,
 }
 
+// Randomizer for enemy move / ghost generator
 let generateNumber = () => {
     return Math.floor(Math.random() * 4)
 }
 
-// Wildcard
+// Wildcard for map generation
 let w = () => {
     return Math.round(Math.random() + 1)
 }
 
+// 0 = background
+// 1 = coin
+// 2 = wall
+// 3 = player
+// 4 = portal
+// 5 = enemy
 let pacMap = [
     [2, 2, 2, 2, 2,   2, 2, 2, 2, 2, 2,   2, 2, 2, 2],
     [2, 1, 1, 1, 1,   1, 2, 2, 2, 1, 1,   1, 1, 1, 2],
@@ -73,9 +77,21 @@ pacApp.onKonamiCode = callback => {
     })
 }
 
+// Generate ghost on Konami code
 pacApp.switcheroo = () => {
+    let ghostNo = generateNumber()
+
+    if (ghostNo == 0) {
+        player.name = "blinky"
+    } else if (ghostNo == 1) {
+        player.name = "pinky"
+    } else if (ghostNo == 2) {
+        player.name = "inky"
+    } else {
+        player.name = "clyde"
+    }
+
     audio.src = "./music/ghostMusic.mp3"
-    player.name = "pinky"
 }
 
 pacApp.endGame = result => {
@@ -100,26 +116,30 @@ pacApp.countDown = () => {
     setInterval(() => {
         document.querySelector("progress").value = (timeLeft -= 1)
 
-        if (timeLeft == 0) {
+        if (timeLeft === 0) {
             setTimeout(() => {
-                pacApp.endGame("lose")
+                if (player.counter !== enemy.counter) {
+                    pacApp.endGame("lose")
+                } else {
+                    pacApp.endGame("end up in a draw! What a stunning display of athleticism and sportsmanship by both characters. Thank you")
+                }
             }, 10)
         }
     }, 250)
 }
 
+// Reset body content when world is generated
 pacApp.setText = () => {
-    let {name, counter} = player
-
     document.querySelector("h2").innerHTML =
     `<span class="score">Score:</span>
-    <span class="charName">${name}</span> -  
-    <span class="${name}Score">${counter}</span>
+    <span class="charName">${player.name}</span> -  
+    <span class="${player.name}Score">${player.counter}</span>
     vs. 
     <span class="charName">Dog Cop</span> -  
     <span class="enemyScore">${enemy.counter}</span>`
 
-    document.querySelector("h3").innerHTML = `Time: <progress value="${timeLeft}" max="${timeLeft}"></progress>`
+    document.querySelector("h3").innerHTML = 
+    `Time: <progress value="${timeLeft}" max="${timeLeft}"></progress>`
 
     document.querySelector(".gameInfo").hidden = false
     document.querySelector(".gameInfo").setAttribute("aria-hidden", false)
@@ -127,13 +147,17 @@ pacApp.setText = () => {
     document.querySelector(".volumeToggle").className = "volumeToggle squish"
 }
 
+// Each element block has a unique ID to keep track of movement/status
 pacApp.pacWorldAppend = (type, row, column) => {
     pacWorldDiv.innerHTML += 
     `<div class="${type}" id="n${row + "-" + column}"></div>`
 }
 
+// Loop through pacWorld arrays and create game map
+// Path: rows > columns > associated "element" code in each column
 pacApp.generatePacWorld = () => {
     pacWorldDiv.innerHTML = ""
+
     pacMap.forEach((row, rowNumber) => {
         row.forEach((element, columnNumber) => {
             if (element == 0) {
@@ -156,21 +180,26 @@ pacApp.generatePacWorld = () => {
 }
 
 pacApp.moveCharacter = (character, movementAxis, movementUnit) => {
+    // The coordinates before movement
+    let {x: thisX, y: thisY} = character
+
+    // moveToBlock = character's location after movement
     if (movementAxis == y) {
-        moveToBlock = pacMap[character.y + movementUnit][character.x]
+        moveToBlock = pacMap[thisY + movementUnit][thisX]
     } else if (movementAxis == x) {
-        moveToBlock = pacMap[character.y][character.x + movementUnit]
+        moveToBlock = pacMap[thisY][thisX + movementUnit]
     }
 
+    // 0 = background
+    // 1 = coin
+    // 2 = wall
+    // 3 = player
+    // 4 = portal
+    // 5 = enemy
     if (moveToBlock !== 2) {
         if (moveToBlock == 3 || moveToBlock == 5) {
             pacApp.endGame("lose")
-        }
-
-        pacMap[character.y][character.x] = 0
-        document.querySelector(`#n${character.y}-${character.x}`).className = "background"
-
-        if (moveToBlock == 4) {
+        } else if (moveToBlock == 4) {
             pacApp.portal(character, movementUnit)
         } else {
             if (movementAxis == y) {
@@ -179,21 +208,29 @@ pacApp.moveCharacter = (character, movementAxis, movementUnit) => {
                 character.x += movementUnit
             }
         }
+        
+        let oldBlock = document.querySelector(`#n${thisY}-${thisX}`)
+        let newBlock = document.querySelector(`#n${character.y}-${character.x}`)
+        
+        pacMap[thisY][thisX] = 0
+        oldBlock.className = "background"
 
         pacMap[character.y][character.x] = character.code
-        document.querySelector(`#n${character.y}-${character.x}`).className = `${character.name}`
+        newBlock.className = `${character.name}`
 
         if (moveToBlock == 1) {
             pacApp.updateScore(character)
-        } 
+        }
     }
 }
 
 pacApp.portal = (character, movement) => {
+    // If (coins beside portal)
     if (pacMap[6][13] == 1 || pacMap[6][1] == 1) {
-        character.counter++
+        pacApp.updateScore(character)
     }
 
+    // Portal functionality
     if (movement == - 1) {
         character.x = 13
     } else {
@@ -217,6 +254,7 @@ pacApp.playerMovement = () => {
     }
 }
 
+// Erm... uh... a work in progress
 pacApp.detectSwipe = () => {
     document.addEventListener("touchstart", startTouch, false)
     document.addEventListener("touchmove", moveTouch, false)
@@ -286,6 +324,7 @@ document.querySelector(".volumeToggle").addEventListener("click", () => {
     audio.muted = !audio.muted
 })
 
+// Start it all up
 document.querySelector(".startButton").addEventListener("click", () => {
     pacInitiated = true
     pacApp.setText()
