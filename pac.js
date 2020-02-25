@@ -9,21 +9,19 @@ document.documentElement.style.setProperty('--vh', `${vh}px`)
 audio.muted = true
 audio.loop = true
 
+let pacInitiated = false
+
 let timeLeft = 25
-let winningScore = 0
 let totalCoins = 0
-let totalCoinsArray = []
-let coinsCounted = false
 
 let x = "horizontal"
 let y = "vertical"
 
-let charKey = 3
-let characterName = "Rembrandt"
 let userInput = ""
 let konamiCode = "38384040373937396665"
 
-let rembrandt = {
+let player = {
+    name: "rembrandt",
     x: 7,
     y: 4,
     code: 3,
@@ -31,6 +29,7 @@ let rembrandt = {
 }
 
 let enemy = {
+    name: "enemy",
     x: 7,
     y: 6,
     code: 5,
@@ -75,17 +74,8 @@ pacApp.onKonamiCode = callback => {
 }
 
 pacApp.switcheroo = () => {
-    charKey = 1980
-    characterName = "Pinky"
+    player.name = "pinky"
     audio.src = "./ghostMusic.mp3"
-}
-
-pacApp.getWinScore = () => {
-    totalCoinsArray.forEach(coin => {
-        totalCoins += coin
-    })
-    winningScore = totalCoins / 2
-    coinsCounted = true
 }
 
 pacApp.endGame = result => {
@@ -93,12 +83,14 @@ pacApp.endGame = result => {
     location.reload()
 }
 
-pacApp.countScore = character => {
+pacApp.updateScore = character => {
     character.counter++
 
-    if (rembrandt.counter > winningScore) {
+    document.querySelector(`.${character.name}Score`).innerHTML = `${character.counter}`
+
+    if (player.counter > totalCoins / 2) {
         pacApp.endGame("win")
-    } else if (enemy.counter > winningScore) {
+    } else if (enemy.counter > totalCoins / 2) {
         pacApp.endGame("lose")
     }
 }
@@ -116,10 +108,12 @@ pacApp.countDown = () => {
 }
 
 pacApp.setText = () => {
+    let {name, counter} = player
+
     document.querySelector("h2").innerHTML =
     `<span class="score">Score:</span>
-    <span class="charName">${characterName}</span> -  
-    <span class="rembrandtScore">${rembrandt.counter}</span>
+    <span class="charName">${name}</span> -  
+    <span class="${name}Score">${counter}</span>
     vs. 
     <span class="charName">Dog Cop</span> -  
     <span class="enemyScore">${enemy.counter}</span>`
@@ -129,50 +123,36 @@ pacApp.setText = () => {
     document.querySelector(".gameInfo").hidden = false
     document.querySelector(".gameInfo").setAttribute("aria-hidden", false)
     document.querySelector(".pacWorld").setAttribute("aria-hidden", true)
-
     document.querySelector(".volumeToggle").className = "volumeToggle squish"
-}
 
-pacApp.resetMap = () => {
     pacWorldDiv.innerHTML = ""
-
-    document.querySelector(".rembrandtScore").innerHTML = `${rembrandt.counter}`
-    document.querySelector(".enemyScore").innerHTML = `${enemy.counter}`
 }
 
-pacApp.pacWorldAppend = type => {
-    pacWorldDiv.innerHTML += `<div class="${type}"></div>`
+pacApp.pacWorldAppend = (type, row, column) => {
+    pacWorldDiv.innerHTML += 
+    `<div class="${type}" id="n${row.toString() + column}"></div>`
 }
 
 pacApp.generatePacWorld = () => {
-    pacApp.resetMap()
-    pacMap.forEach(row => {
-        row.forEach(element => {
+    pacMap.forEach((row, rowNumber) => {
+        row.forEach((element, columnNumber) => {
             if (element == 0) {
-                pacApp.pacWorldAppend("background")
+                pacApp.pacWorldAppend("background", rowNumber, columnNumber)
             } else if (element == 1) {
-                pacApp.pacWorldAppend("coin")
-                if (coinsCounted == false) {
-                    totalCoinsArray.push(element)
-                }
+                pacApp.pacWorldAppend("coin", rowNumber, columnNumber)
+                totalCoins++
             } else if (element == 2) {
-                pacApp.pacWorldAppend("wall")
-            } else if (element == charKey) {
-                pacApp.pacWorldAppend("rembrandt")
+                pacApp.pacWorldAppend("wall", rowNumber, columnNumber)
+            } else if (element == 3) {
+                pacApp.pacWorldAppend(`${player.name}`, rowNumber, columnNumber)
             } else if (element == 4) {
-                pacApp.pacWorldAppend("portal")
-            } else if (element == 5) {
-                pacApp.pacWorldAppend("enemy")
+                pacApp.pacWorldAppend("portal", rowNumber, columnNumber)
             } else {
-                pacApp.pacWorldAppend("ghost")
-            }
+                pacApp.pacWorldAppend("enemy", rowNumber, columnNumber)
+            } 
         })
         pacWorldDiv.innerHTML += "<br>"
     })
-
-    if (coinsCounted == false) {
-        pacApp.getWinScore()
-    }
 }
 
 pacApp.moveCharacter = (character, movementAxis, movementUnit) => {
@@ -184,12 +164,13 @@ pacApp.moveCharacter = (character, movementAxis, movementUnit) => {
 
     if (moveToBlock !== 2) {
         if (moveToBlock == 1) {
-            pacApp.countScore(character)
+            pacApp.updateScore(character)
         } else if (moveToBlock == 3 || moveToBlock == 5) {
             pacApp.endGame("lose")
         }
 
         pacMap[character.y][character.x] = 0
+        document.querySelector(`#n${character.y}${character.x}`).className = "background"
 
         if (moveToBlock == 4) {
             pacApp.portal(character, movementUnit)
@@ -202,8 +183,7 @@ pacApp.moveCharacter = (character, movementAxis, movementUnit) => {
         }
 
         pacMap[character.y][character.x] = character.code
-
-        pacApp.generatePacWorld()
+        document.querySelector(`#n${character.y}${character.x}`).className = `${character.name}`
     }
 }
 
@@ -219,18 +199,18 @@ pacApp.portal = (character, movement) => {
     }
 }
 
-pacApp.rembrandtMovement = () => {
+pacApp.playerMovement = () => {
     document.onkeydown = event => {
         keyPress = event.key
 
         if (keyPress == "ArrowUp" || keyPress == "w") {
-            pacApp.moveCharacter(rembrandt, y, -1)
+            pacApp.moveCharacter(player, y, -1)
         } else if (keyPress == "ArrowRight" || keyPress == "d") {
-            pacApp.moveCharacter(rembrandt, x, 1)
+            pacApp.moveCharacter(player, x, 1)
         } else if (keyPress == "ArrowDown" || keyPress == "s") {
-            pacApp.moveCharacter(rembrandt, y, 1)
+            pacApp.moveCharacter(player, y, 1)
         } else if (keyPress == "ArrowLeft" || keyPress == "a") {
-            pacApp.moveCharacter(rembrandt, x, -1)
+            pacApp.moveCharacter(player, x, -1)
         }
     }
 }
@@ -262,19 +242,19 @@ pacApp.detectSwipe = () => {
 
         if (Math.abs(diffX) > Math.abs(diffY)) {
             if (diffX > 0) {
-                pacApp.moveCharacter(rembrandt, x, -1)
-                pacApp.moveCharacter(rembrandt, x, -1)
+                pacApp.moveCharacter(player, x, -1)
+                pacApp.moveCharacter(player, x, -1)
             } else {
-                pacApp.moveCharacter(rembrandt, x, 1)
-                pacApp.moveCharacter(rembrandt, x, 1)
+                pacApp.moveCharacter(player, x, 1)
+                pacApp.moveCharacter(player, x, 1)
             }
         } else {
             if (diffY > 0) {
-                pacApp.moveCharacter(rembrandt, y, -1)
-                pacApp.moveCharacter(rembrandt, y, -1)
+                pacApp.moveCharacter(player, y, -1)
+                pacApp.moveCharacter(player, y, -1)
             } else {
-                pacApp.moveCharacter(rembrandt, y, 1)
-                pacApp.moveCharacter(rembrandt, y, 1)
+                pacApp.moveCharacter(player, y, 1)
+                pacApp.moveCharacter(player, y, 1)
             }
         }
         initialX = null
@@ -305,18 +285,18 @@ document.querySelector(".volumeToggle").addEventListener("click", () => {
 })
 
 document.querySelector(".startButton").addEventListener("click", () => {
+    pacInitiated = true
     pacApp.setText()
-    
     pacApp.generatePacWorld()
     pacApp.countDown()
-    pacApp.rembrandtMovement()
+    pacApp.playerMovement()
     pacApp.enemyMovement()
     pacApp.detectSwipe()
     audio.play()
 })
 
 pacApp.onKonamiCode(() => {
-    if (coinsCounted == false) {
+    if (pacInitiated == false) {
         pacApp.switcheroo()
     }
 })
