@@ -92,6 +92,7 @@ button {
     position: relative;
     margin: 10% 0;
     font-size: 3.5rem;
+    text-transform: uppercase;
     transition: all 0.3s;
 }
 
@@ -107,6 +108,17 @@ button {
     bottom: -5px;
     border-bottom: 3px dotted #000000;
 }
+
+.credit {
+    font-size: 1rem;
+    margin: 0 0 5px 0;
+}
+
+a {
+    color: black;
+}
+
+/* Pac-World */
 
 .score {
     display: block;
