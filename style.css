@@ -7,7 +7,7 @@ html { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: 
 
 @font-face {
     font-family: "pacFont";
-    src: url(./PAC-FONT.TTF);
+    src: url(./otherStuff/PAC-FONT.TTF);
 }
 
 html {
@@ -136,17 +136,17 @@ button {
 }
 
 .rembrandt {
-    background-image: url(./rembrandt.png);
+    background-image: url(./coolPics/rembrandt.png);
     background-size: cover;
 }
 
 .enemy {
-    background-image: url(./dogCop.png);
+    background-image: url(./coolPics/dogCop.png);
     background-size: cover;
 }
 
 .pinky {
-    background-image: url(./ghost.png);
+    background-image: url(./coolPics/pinky.png);
     background-size: cover;
 }
 

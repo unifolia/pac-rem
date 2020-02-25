@@ -74,8 +74,8 @@ pacApp.onKonamiCode = callback => {
 }
 
 pacApp.switcheroo = () => {
+    audio.src = "./music/ghostMusic.mp3"
     player.name = "pinky"
-    audio.src = "./ghostMusic.mp3"
 }
 
 pacApp.endGame = result => {
@@ -163,9 +163,7 @@ pacApp.moveCharacter = (character, movementAxis, movementUnit) => {
     }
 
     if (moveToBlock !== 2) {
-        if (moveToBlock == 1) {
-            pacApp.updateScore(character)
-        } else if (moveToBlock == 3 || moveToBlock == 5) {
+        if (moveToBlock == 3 || moveToBlock == 5) {
             pacApp.endGame("lose")
         }
 
@@ -184,6 +182,10 @@ pacApp.moveCharacter = (character, movementAxis, movementUnit) => {
 
         pacMap[character.y][character.x] = character.code
         document.querySelector(`#n${character.y}-${character.x}`).className = `${character.name}`
+
+        if (moveToBlock == 1) {
+            pacApp.updateScore(character)
+        } 
     }
 }
 
