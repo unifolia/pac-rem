@@ -92,7 +92,6 @@ button {
     position: relative;
     margin: 10% 0;
     font-size: 3.5rem;
-    text-transform: uppercase;
     transition: all 0.3s;
 }
 
@@ -321,7 +320,7 @@ progress[value]::-moz-progress-bar {
         padding: 30px 10px;
     }
     p:first-child {
-        margin-top: -50px;
+        margin-top: -15px;
     }
 }
 
