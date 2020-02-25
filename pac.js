@@ -11,7 +11,7 @@ audio.loop = true
 
 let pacInitiated = false
 
-let timeLeft = 25
+let timeLeft = 60
 let totalCoins = 0
 
 let x = "horizontal"
@@ -36,7 +36,7 @@ let enemy = {
     counter: 0,
 }
 
-let randomEnemyMove = () => {
+let generateNumber = () => {
     return Math.floor(Math.random() * 4)
 }
 
@@ -86,7 +86,8 @@ pacApp.endGame = result => {
 pacApp.updateScore = character => {
     character.counter++
 
-    document.querySelector(`.${character.name}Score`).innerHTML = `${character.counter}`
+    document.querySelector(`.${character.name}Score`).innerHTML = 
+    `${character.counter}`
 
     if (player.counter > totalCoins / 2) {
         pacApp.endGame("win")
@@ -104,7 +105,7 @@ pacApp.countDown = () => {
                 pacApp.endGame("lose")
             }, 10)
         }
-    }, 750)
+    }, 250)
 }
 
 pacApp.setText = () => {
@@ -124,16 +125,15 @@ pacApp.setText = () => {
     document.querySelector(".gameInfo").setAttribute("aria-hidden", false)
     document.querySelector(".pacWorld").setAttribute("aria-hidden", true)
     document.querySelector(".volumeToggle").className = "volumeToggle squish"
-
-    pacWorldDiv.innerHTML = ""
 }
 
 pacApp.pacWorldAppend = (type, row, column) => {
     pacWorldDiv.innerHTML += 
-    `<div class="${type}" id="n${row.toString() + column}"></div>`
+    `<div class="${type}" id="n${row + "-" + column}"></div>`
 }
 
 pacApp.generatePacWorld = () => {
+    pacWorldDiv.innerHTML = ""
     pacMap.forEach((row, rowNumber) => {
         row.forEach((element, columnNumber) => {
             if (element == 0) {
@@ -170,7 +170,7 @@ pacApp.moveCharacter = (character, movementAxis, movementUnit) => {
         }
 
         pacMap[character.y][character.x] = 0
-        document.querySelector(`#n${character.y}${character.x}`).className = "background"
+        document.querySelector(`#n${character.y}-${character.x}`).className = "background"
 
         if (moveToBlock == 4) {
             pacApp.portal(character, movementUnit)
@@ -183,7 +183,7 @@ pacApp.moveCharacter = (character, movementAxis, movementUnit) => {
         }
 
         pacMap[character.y][character.x] = character.code
-        document.querySelector(`#n${character.y}${character.x}`).className = `${character.name}`
+        document.querySelector(`#n${character.y}-${character.x}`).className = `${character.name}`
     }
 }
 
@@ -265,18 +265,18 @@ pacApp.detectSwipe = () => {
 pacApp.enemyMovement = () => {
     setTimeout(() => {
         setInterval(() => {
-            let moveToMake = randomEnemyMove()
-            if (moveToMake === 0) {
+            let move = generateNumber()
+            if (move === 0) {
                 pacApp.moveCharacter(enemy, y, -1)
-            } else if (moveToMake === 1) {
+            } else if (move === 1) {
                 pacApp.moveCharacter(enemy, x, 1)
-            } else if (moveToMake === 2) {
+            } else if (move === 2) {
                 pacApp.moveCharacter(enemy, y, 1)
-            } else if (moveToMake === 3) {
+            } else if (move === 3) {
                 pacApp.moveCharacter(enemy, x, -1)
             } 
-        }, 50)
-    }, 500)
+        }, 25)
+    }, 100)
 }
 
 document.querySelector(".volumeToggle").addEventListener("click", () => {
