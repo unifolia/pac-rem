@@ -25,6 +25,7 @@ html {
 
 body {
     height: 100vh;
+    min-height: 600px;
     min-width: 320px;
     padding: 50px;
     display: flex;
