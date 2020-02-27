@@ -337,7 +337,7 @@ document.querySelector(".startButton").addEventListener("click", () => {
 })
 
 pacApp.onKonamiCode(() => {
-    if (pacInitiated == false) {
+    if (!pacInitiated) {
         pacApp.switcheroo()
     }
 })
