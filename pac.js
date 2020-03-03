@@ -8,6 +8,8 @@ let x = "horizontal"
 let y = "vertical"
 let userInput = ""
 let konamiCode = "38384040373937396665"
+let initialX = null
+let initialY = null
 
 const pacWorldDiv = document.getElementsByClassName("pacWorld")[0]
 const audio = document.querySelector("audio")
@@ -254,13 +256,9 @@ pacApp.playerMovement = () => {
     }
 }
 
-// Erm... uh... a work in progress
 pacApp.detectSwipe = () => {
     document.addEventListener("touchstart", startTouch, false)
     document.addEventListener("touchmove", moveTouch, false)
-
-    let initialX = null
-    let initialY = null
 
     function startTouch(event) {
         initialX = event.touches[0].clientX
@@ -268,37 +266,33 @@ pacApp.detectSwipe = () => {
     }
 
     function moveTouch(event) {
-        event.preventDefault()
+        if (initialX !== null || initialY !== null) {
+            let currentX = event.touches[0].clientX
+            let currentY = event.touches[0].clientY
 
-        if (initialX === null || initialY === null) {
-            return
-        }
+            let diffX = initialX - currentX
+            let diffY = initialY - currentY
 
-        let currentX = event.touches[0].clientX
-        let currentY = event.touches[0].clientY
-
-        let diffX = initialX - currentX
-        let diffY = initialY - currentY
-
-        if (Math.abs(diffX) > Math.abs(diffY)) {
-            if (diffX > 0) {
-                pacApp.moveCharacter(player, x, -1)
-                pacApp.moveCharacter(player, x, -1)
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX > 0) {
+                    pacApp.moveCharacter(player, x, -1)
+                    pacApp.moveCharacter(player, x, -1)
+                } else {
+                    pacApp.moveCharacter(player, x, 1)
+                    pacApp.moveCharacter(player, x, 1)
+                }
             } else {
-                pacApp.moveCharacter(player, x, 1)
-                pacApp.moveCharacter(player, x, 1)
+                if (diffY > 0) {
+                    pacApp.moveCharacter(player, y, -1)
+                    pacApp.moveCharacter(player, y, -1)
+                } else {
+                    pacApp.moveCharacter(player, y, 1)
+                    pacApp.moveCharacter(player, y, 1)
+                }
             }
-        } else {
-            if (diffY > 0) {
-                pacApp.moveCharacter(player, y, -1)
-                pacApp.moveCharacter(player, y, -1)
-            } else {
-                pacApp.moveCharacter(player, y, 1)
-                pacApp.moveCharacter(player, y, 1)
-            }
+            initialX = null
+            initialY = null
         }
-        initialX = null
-        initialY = null
     }
 }
 
