@@ -142,7 +142,7 @@ pacApp.setText = () => {
     <span class="charName">${player.name}</span> -  
     <span class="${player.name}Score">${player.counter}</span>
     vs. 
-    <span class="charName">Dog Cop</span> -  
+    <span class="charName">Dog</span> -  
     <span class="enemyScore">${enemy.counter}</span>`
 
     document.querySelector("h3").innerHTML = 
