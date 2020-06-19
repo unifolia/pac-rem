@@ -35,9 +35,14 @@ let enemy = {
     counter: 0,
 }
 
-// Randomizer for enemy move / ghost generator
+// Randomizer for ghost generator
 let generateNumber = () => {
     return Math.floor(Math.random() * 4)
+}
+
+// Randomizer for enemy move
+let generateEnemyMove = () => {
+    return Math.floor(Math.random() * 2)
 }
 
 // Wildcard for map generation
@@ -299,17 +304,41 @@ pacApp.detectSwipe = () => {
 pacApp.enemyMovement = () => {
     setTimeout(() => {
         setInterval(() => {
-            let move = generateNumber()
-            if (move === 0) {
-                pacApp.moveCharacter(enemy, y, -1)
-            } else if (move === 1) {
-                pacApp.moveCharacter(enemy, x, 1)
-            } else if (move === 2) {
-                pacApp.moveCharacter(enemy, y, 1)
-            } else if (move === 3) {
-                pacApp.moveCharacter(enemy, x, -1)
-            } 
-        }, 25)
+            let move = generateEnemyMove()
+
+            // Enemy A.I. version 1.0
+            // Goals: Enemy to not get stuck, enemy to utilize portals
+            // More to come!
+            if (player.x > enemy.x) {
+                if (player.y > enemy.y) {
+                    if (move == 0) {
+                        pacApp.moveCharacter(enemy, y, 1)
+                    } else {
+                        pacApp.moveCharacter(enemy, x, 1)
+                    }
+                } else {
+                    if (move == 0) {
+                        pacApp.moveCharacter(enemy, y, -1)
+                    } else {
+                        pacApp.moveCharacter(enemy, x, 1)
+                    } 
+                }
+            } else {
+                if (player.y > enemy.y) {
+                    if (move == 0) {
+                        pacApp.moveCharacter(enemy, y, 1)
+                    } else {
+                        pacApp.moveCharacter(enemy, x, -1)
+                    }
+                } else {
+                    if (move == 0) {
+                        pacApp.moveCharacter(enemy, y, -1)
+                    } else {
+                        pacApp.moveCharacter(enemy, x, -1)
+                    }
+                }
+            }
+        }, 85)
     }, 100)
 }
 
