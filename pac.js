@@ -35,14 +35,8 @@ let enemy = {
     counter: 0,
 }
 
-// Randomizer for ghost generator
-let generateNumber = () => {
-    return Math.floor(Math.random() * 4)
-}
-
-// Randomizer for enemy move
-let generateEnemyMove = () => {
-    return Math.floor(Math.random() * 2)
+let generateNumber = n => {
+    return Math.floor(Math.random() * n)
 }
 
 // Wildcard for map generation
@@ -86,7 +80,7 @@ pacApp.onKonamiCode = callback => {
 
 // Generate ghost on Konami code
 pacApp.switcheroo = () => {
-    let ghostNo = generateNumber()
+    let ghostNo = generateNumber(4)
 
     if (ghostNo == 0) {
         player.name = "blinky"
@@ -304,7 +298,7 @@ pacApp.detectSwipe = () => {
 pacApp.enemyMovement = () => {
     setTimeout(() => {
         setInterval(() => {
-            let move = generateEnemyMove()
+            let move = generateNumber(2)
 
             // Enemy A.I. version 1.0
             // Goals: Enemy to not get stuck, enemy to utilize portals
