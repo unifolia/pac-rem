@@ -15,7 +15,9 @@ html { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: 
 
 @font-face {
     font-family: "pacFont";
-    src: url(./otherStuff/PAC-FONT.TTF);
+    src: url(./otherStuff/PacFont.ttf);
+    font-style: normal;
+    font-weight: 400;
 }
 
 html {

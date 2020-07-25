@@ -10,6 +10,7 @@ let userInput = ""
 let konamiCode = "38384040373937396665"
 let initialX = null
 let initialY = null
+let gameOver = false
 
 const pacWorldDiv = document.getElementsByClassName("pacWorld")[0]
 const audio = document.querySelector("audio")
@@ -96,8 +97,17 @@ pacApp.switcheroo = () => {
 }
 
 pacApp.endGame = result => {
-    alert(`You ${result}!`)
-    location.reload()
+    if (!gameOver) {
+        Swal.fire({
+            title: (result == "win" ? "Victory!" : "Game Over!"),
+            text: `You ${result}!`,
+            icon: (result == "win" ? "success" : "error"),
+            confirmButtonText: "Reset",
+        }).then(() => {
+            location.reload()
+        })
+    }
+    gameOver = true
 }
 
 pacApp.updateScore = character => {
@@ -332,8 +342,8 @@ pacApp.enemyMovement = () => {
                     }
                 }
             }
-        }, 85)
-    }, 100)
+        }, 100)
+    }, 500)
 }
 
 document.querySelector(".volumeToggle").addEventListener("click", () => {
