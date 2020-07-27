@@ -117,7 +117,7 @@ button {
 }
 
 a {
-    color: black;
+    color: #000000;
 }
 
 /* Pac-World */
@@ -128,7 +128,7 @@ a {
 
 .charName {
     text-transform: capitalize;
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid #000000;
 }
 
 .pacWorld {
@@ -145,9 +145,9 @@ a {
 }
 
 .wall {
-    background: #808080;
-    border-bottom-right-radius: 50%;
-    border-top-left-radius: 50%;
+    background: linear-gradient(184deg, #808080 0%, #4b4b4b 100%);
+    border: 1px solid #000000;
+    border-radius: 7.5px;
 }
 
 .background {
@@ -155,12 +155,14 @@ a {
 }
 
 .coin {
-    background: #556b2f;
-    border: 13px solid cornsilk;
+    background: linear-gradient(34deg, #556b2f 36%, #909c7d 86%, #d29e16 100%); 
+    border: 13px solid #fff8dc;
     border-radius: 50%;
+    animation: 1.75s pulseSize linear infinite;
 }
 
 .portal {
+    border: 1.5px solid #9dc4ee;
     background: linear-gradient(228deg, #ed3535, #ed8c35, #e4ed35, #5aed35, #35edb2, #358eed, #7f35ed, #ed35c9);
     background-size: 100% 100%;
     box-shadow: inset 0px 0px 30px #daa520;
@@ -195,9 +197,9 @@ progress {
     display: inline-block;
     width: 70%;
     margin: -7px;
-    border: 2px solid black;
+    border: 2px solid #000000;
     border-radius: 5px;
-    box-shadow: 2px 2px black;
+    box-shadow: 2px 2px #000000;
 }
 
 progress[value] {
@@ -254,6 +256,23 @@ progress[value]::-moz-progress-bar {
     clip: rect(1px 1px 1px 1px);
     clip: rect(1px, 1px, 1px, 1px);
     white-space: nowrap;
+}
+
+@-moz-keyframes pulseSize {
+    0% { transform: scale(1) }
+    67% { transform: scale(0.75) }
+    100% { transform: scale(1) }
+}
+@-webkit-keyframes pulseSize {
+    0% { transform: scale(1) }
+    67% { transform: scale(0.75) }
+    100% { transform: scale(1) }
+}
+
+@keyframes pulseSize {
+    0% { transform: scale(1) }
+    67% { transform: scale(0.75) }
+    100% { transform: scale(1) }
 }
 
 @media (min-height: 1000px) {
